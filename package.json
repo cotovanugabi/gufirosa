@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "generate": "graphql-codegen --config codegen.yml",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },
   "dependencies": {
@@ -27,7 +28,17 @@
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.6.1",
+    "@graphql-codegen/core": "^2.5.1",
+    "@graphql-codegen/plugin-helpers": "^2.4.1",
+    "@graphql-codegen/schema-ast": "^2.4.1",
+    "@graphql-codegen/typescript": "^2.4.3",
+    "@graphql-codegen/typescript-operations": "^2.3.0",
+    "@graphql-codegen/typescript-react-apollo": "^3.2.5",
+    "@graphql-codegen/typescript-react-query": "^3.5.2",
+    "@graphql-codegen/typescript-resolvers": "^2.5.0",
     "@types/cors": "^2.8.12",
+    "@types/graphql": "^14.5.0",
     "@types/node": "latest",
     "@types/react": "latest",
     "eslint": "latest",

@@ -6,8 +6,16 @@ import Box from "@mui/material/Box";
 import Link from "../Link";
 import ProTip from "../ProTip";
 import Copyright from "../Copyright";
+import { useGetAllSeasonsQuery } from "../graphql/generated/api";
+import { CircularProgress } from "@mui/material";
 
-const Home: NextPage = () => {
+export default function Home() {
+  const { data, loading } = useGetAllSeasonsQuery();
+
+  if (loading) {
+    return <CircularProgress />;
+  }
+
   return (
     <Container maxWidth="lg">
       <Box
@@ -25,11 +33,10 @@ const Home: NextPage = () => {
         <Link href="/about" color="secondary">
           Go to the about page
         </Link>
+        {JSON.stringify(data)}
         <ProTip />
         <Copyright />
       </Box>
     </Container>
   );
-};
-
-export default Home;
+}

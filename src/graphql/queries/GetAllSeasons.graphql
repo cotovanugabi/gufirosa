@@ -1,0 +1,6 @@
+query GetAllSeasons {
+  seasons {
+    id
+    name
+  }
+}

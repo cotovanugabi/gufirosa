@@ -7,15 +7,16 @@ import {
 } from "@apollo/client";
 import { graphqlEndpoint } from "../config";
 
-const HOST = process.env.HOST
+const uri =
+  process.env.NODE_ENV == "development"
+    ? `http://localhost:3000/${graphqlEndpoint}`
+    : process.env.HOST + graphqlEndpoint;
 let apolloClient: ApolloClient<NormalizedCacheObject>;
 
 function createApolloClient() {
   return new ApolloClient({
     ssrMode: typeof window === "undefined", // set to true for SSR
-    link: new HttpLink({
-      uri: `${HOST}${graphqlEndpoint}`,
-    }),
+    link: new HttpLink({ uri }),
     cache: new InMemoryCache({
       typePolicies: {
         Query: {
