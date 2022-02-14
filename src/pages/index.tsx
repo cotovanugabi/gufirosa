@@ -6,13 +6,35 @@ import Box from "@mui/material/Box";
 import Link from "../Link";
 import ProTip from "../ProTip";
 import Copyright from "../Copyright";
-import { useGetAllStarsQuery } from "../graphql/generated/api";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress, Stack, TextField } from "@mui/material";
+import {
+  useCreateSeasonMutation,
+  useGetAllSeasonsQuery,
+} from "../graphql/generated/api";
+import { useForm } from "react-hook-form";
+
+interface FormFields {
+  name: string;
+}
 
 export default function Home() {
-  const { data, loading } = useGetAllStarsQuery();
+  const { handleSubmit, register, reset } = useForm<FormFields>();
+  const { data, loading: isQueryLoading } = useGetAllSeasonsQuery();
+  const [createSeasonMutation, { loading: isMutationLoading }] =
+    useCreateSeasonMutation();
 
-  if (loading) {
+  const onSubmit = handleSubmit((values) => {
+    console.log(values);
+    createSeasonMutation({
+      variables: {
+        input: {
+          name: values.name,
+        },
+      },
+    });
+  });
+
+  if (isQueryLoading) {
     return <CircularProgress />;
   }
 
@@ -34,8 +56,14 @@ export default function Home() {
           Go to the about page
         </Link>
         {JSON.stringify(data)}
-        <ProTip />
-        <Copyright />
+        <form onSubmit={onSubmit}>
+          <Stack spacing={1}>
+            <TextField {...register("name")} />
+            <Button type="submit" variant="contained">
+              Add season
+            </Button>
+          </Stack>
+        </form>
       </Box>
     </Container>
   );

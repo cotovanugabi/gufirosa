@@ -33,7 +33,6 @@ export type MutationCreateSeasonArgs = {
 export type Query = {
   __typename?: 'Query';
   seasons?: Maybe<Array<Maybe<Season>>>;
-  stars?: Maybe<Array<Maybe<Star>>>;
 };
 
 export type Season = {
@@ -42,24 +41,53 @@ export type Season = {
   name: Scalars['String'];
 };
 
-export type Star = {
-  __typename?: 'Star';
-  constellation?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
-};
+export type CreateSeasonMutationVariables = Exact<{
+  input?: InputMaybe<CreateSeasonInput>;
+}>;
+
+
+export type CreateSeasonMutation = { __typename?: 'Mutation', createSeason?: { __typename?: 'Season', id: string, name: string } | null };
 
 export type GetAllSeasonsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllSeasonsQuery = { __typename?: 'Query', seasons?: Array<{ __typename?: 'Season', id: string, name: string } | null> | null };
 
-export type GetAllStarsQueryVariables = Exact<{ [key: string]: never; }>;
 
+export const CreateSeasonDocument = gql`
+    mutation CreateSeason($input: CreateSeasonInput) {
+  createSeason(input: $input) {
+    id
+    name
+  }
+}
+    `;
+export type CreateSeasonMutationFn = Apollo.MutationFunction<CreateSeasonMutation, CreateSeasonMutationVariables>;
 
-export type GetAllStarsQuery = { __typename?: 'Query', stars?: Array<{ __typename?: 'Star', id: string, name?: string | null, constellation?: string | null } | null> | null };
-
-
+/**
+ * __useCreateSeasonMutation__
+ *
+ * To run a mutation, you first call `useCreateSeasonMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSeasonMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSeasonMutation, { data, loading, error }] = useCreateSeasonMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSeasonMutation(baseOptions?: Apollo.MutationHookOptions<CreateSeasonMutation, CreateSeasonMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSeasonMutation, CreateSeasonMutationVariables>(CreateSeasonDocument, options);
+      }
+export type CreateSeasonMutationHookResult = ReturnType<typeof useCreateSeasonMutation>;
+export type CreateSeasonMutationResult = Apollo.MutationResult<CreateSeasonMutation>;
+export type CreateSeasonMutationOptions = Apollo.BaseMutationOptions<CreateSeasonMutation, CreateSeasonMutationVariables>;
 export const GetAllSeasonsDocument = gql`
     query GetAllSeasons {
   seasons {
@@ -95,39 +123,3 @@ export function useGetAllSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetAllSeasonsQueryHookResult = ReturnType<typeof useGetAllSeasonsQuery>;
 export type GetAllSeasonsLazyQueryHookResult = ReturnType<typeof useGetAllSeasonsLazyQuery>;
 export type GetAllSeasonsQueryResult = Apollo.QueryResult<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>;
-export const GetAllStarsDocument = gql`
-    query GetAllStars {
-  stars {
-    id
-    name
-    constellation
-  }
-}
-    `;
-
-/**
- * __useGetAllStarsQuery__
- *
- * To run a query within a React component, call `useGetAllStarsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllStarsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllStarsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllStarsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllStarsQuery, GetAllStarsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllStarsQuery, GetAllStarsQueryVariables>(GetAllStarsDocument, options);
-      }
-export function useGetAllStarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllStarsQuery, GetAllStarsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllStarsQuery, GetAllStarsQueryVariables>(GetAllStarsDocument, options);
-        }
-export type GetAllStarsQueryHookResult = ReturnType<typeof useGetAllStarsQuery>;
-export type GetAllStarsLazyQueryHookResult = ReturnType<typeof useGetAllStarsLazyQuery>;
-export type GetAllStarsQueryResult = Apollo.QueryResult<GetAllStarsQuery, GetAllStarsQueryVariables>;

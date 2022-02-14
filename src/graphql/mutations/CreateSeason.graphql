@@ -1,0 +1,6 @@
+mutation CreateSeason($input: CreateSeasonInput) {
+  createSeason(input: $input) {
+    id
+    name
+  }
+}
