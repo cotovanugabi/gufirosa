@@ -6,11 +6,11 @@ import Box from "@mui/material/Box";
 import Link from "../Link";
 import ProTip from "../ProTip";
 import Copyright from "../Copyright";
-import { useGetAllSeasonsQuery } from "../graphql/generated/api";
+import { useGetAllStarsQuery } from "../graphql/generated/api";
 import { CircularProgress } from "@mui/material";
 
 export default function Home() {
-  const { data, loading } = useGetAllSeasonsQuery();
+  const { data, loading } = useGetAllStarsQuery();
 
   if (loading) {
     return <CircularProgress />;

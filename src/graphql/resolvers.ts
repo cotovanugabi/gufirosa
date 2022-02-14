@@ -1,3 +1,5 @@
+import { prisma } from "../lib/prisma";
+
 const seasons = [
   {
     id: 1,
@@ -13,6 +15,9 @@ export const resolvers = {
   Query: {
     seasons: () => {
       return seasons;
+    },
+    stars: () => {
+      return prisma?.star.findMany();
     },
   },
   Mutation: {

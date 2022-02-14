@@ -6,6 +6,11 @@ const typeDefs = /* GraphQL */ `
     id: ID!
     name: String!
   }
+  type Star {
+    id: ID!
+    name: String
+    constellation: String
+  }
 
   input CreateSeasonInput {
     id: String
@@ -14,6 +19,7 @@ const typeDefs = /* GraphQL */ `
 
   type Query {
     seasons: [Season]
+    stars: [Star]
   }
 
   type Mutation {

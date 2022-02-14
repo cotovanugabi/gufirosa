@@ -1,0 +1,7 @@
+query GetAllStars {
+  stars {
+    id
+    name
+    constellation
+  }
+}
