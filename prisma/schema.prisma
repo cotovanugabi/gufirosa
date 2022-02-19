@@ -14,8 +14,125 @@ datasource db {
 }
 
 model Season {
+  id           Int           @id @default(autoincrement())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  name         String        @db.VarChar(255)
+  competitions Competition[]
+  events       Event[]
+}
+
+model Group {
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(255)
+  players      Player[]
+  events       Event[]
+  competitions Competition[]
+  teams        Team[]
+  // stats        PlayerStats[]
+}
+
+model Competition {
+  id       Int     @id @default(autoincrement())
+  name     String  @db.VarChar(255)
+  groupId  Int
+  seasonId Int
+  group    Group   @relation(fields: [groupId], references: [id])
+  season   Season  @relation(fields: [seasonId], references: [id])
+  events   Event[]
+}
+
+model Event {
+  id            Int              @id @default(autoincrement())
+  isHome        Boolean          @default(true)
+  seasonId      Int
+  competitionId Int
+  teamId        Int
+  opponentId    Int
+  groupId       Int
+  season        Season           @relation(fields: [seasonId], references: [id])
+  competition   Competition      @relation(fields: [competitionId], references: [id])
+  group         Group            @relation(fields: [groupId], references: [id])
+  team          Team             @relation(name: "CurrentTeam", fields: [teamId], references: [id])
+  opponent      Team             @relation(name: "OpponentTeam", fields: [opponentId], references: [id])
+  stats         PlayerStats[]
+  votes         Vote[]
+  players       PlayersOnEvent[]
+  result        EventResult?
+}
+
+model EventResult {
+  id            Int   @id @default(autoincrement())
+  teamGoals     Int
+  opponentGoals Int
+  eventId       Int   @unique
+  event         Event @relation(fields: [eventId], references: [id])
+}
+
+model Team {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
   name      String   @db.VarChar(255)
+  owned     Boolean  @default(false)
+  groupId   Int
+  group     Group    @relation(fields: [groupId], references: [id])
+  players   Player[]
+  events    Event[]  @relation("CurrentTeam")
+  opponents Event[]  @relation("OpponentTeam")
+}
+
+model Player {
+  id            Int              @id @default(autoincrement())
+  firstName     String           @db.VarChar(255)
+  lastName      String           @db.VarChar(255)
+  number        Int
+  email         String?          @db.VarChar(255)
+  active        Boolean          @default(true)
+  teamId        Int
+  groupId       Int
+  team          Team?            @relation(fields: [teamId], references: [id])
+  group         Group?           @relation(fields: [groupId], references: [id])
+  events        PlayersOnEvent[]
+  stats         PlayerStats[]
+  receivedVotes Vote[]           @relation("Player")
+  submitedVotes Vote[]           @relation("Owner")
+}
+
+model PlayerStats {
+  id          Int    @id @default(autoincrement())
+  goals       Int    @default(0)
+  assists     Int    @default(0)
+  redCards    Int    @default(0)
+  yellowCards Int    @default(0)
+  playerId    Int
+  eventId     Int
+  player      Player @relation(fields: [playerId], references: [id])
+  event       Event  @relation(fields: [eventId], references: [id])
+}
+
+model PlayersOnEvent {
+  playerId  Int
+  eventId   Int
+  createdAt DateTime     @default(now())
+  player    Player       @relation(fields: [playerId], references: [id])
+  event     Event        @relation(fields: [eventId], references: [id])
+  status    PlayerStatus @default(PENDING)
+
+  @@id([playerId, eventId])
+}
+
+enum PlayerStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Vote {
+  id       Int    @id @default(autoincrement())
+  eventId  Int
+  ownerId  Int
+  playerId Int
+  points   Int
+  event    Event  @relation(fields: [eventId], references: [id])
+  owner    Player @relation(name: "Owner", fields: [ownerId], references: [id])
+  player   Player @relation(name: "Player", fields: [playerId], references: [id])
 }
