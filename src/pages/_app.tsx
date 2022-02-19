@@ -8,7 +8,9 @@ import theme from "../theme";
 import createEmotionCache from "../createEmotionCache";
 import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../lib/apollo";
+import { DashboardLayout } from "../components";
 
+const dashboardPath = "/dashboard";
 const clientSideEmotionCache = createEmotionCache();
 
 interface MyAppProps extends AppProps {
@@ -17,7 +19,14 @@ interface MyAppProps extends AppProps {
 
 export default function MyApp(props: MyAppProps) {
   const apolloClient = useApollo(props.pageProps.initialApolloState);
-  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+  const {
+    Component,
+    router: { route },
+    emotionCache = clientSideEmotionCache,
+    pageProps,
+  } = props;
+  const isDashboardRoute = route.startsWith(dashboardPath);
+
   return (
     <ApolloProvider client={apolloClient}>
       <CacheProvider value={emotionCache}>
@@ -26,7 +35,13 @@ export default function MyApp(props: MyAppProps) {
         </Head>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Component {...pageProps} />
+          {isDashboardRoute ? (
+            <DashboardLayout>
+              <Component {...pageProps} />
+            </DashboardLayout>
+          ) : (
+            <Component {...pageProps} />
+          )}
         </ThemeProvider>
       </CacheProvider>
     </ApolloProvider>
