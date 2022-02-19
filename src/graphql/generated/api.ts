@@ -15,111 +15,194 @@ export type Scalars = {
   Float: number;
 };
 
-export type CreateSeasonInput = {
-  id?: InputMaybe<Scalars['String']>;
-  name: Scalars['String'];
-};
-
-export type Mutation = {
-  __typename?: 'Mutation';
-  createSeason?: Maybe<Season>;
-};
-
-
-export type MutationCreateSeasonArgs = {
-  input?: InputMaybe<CreateSeasonInput>;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  seasons?: Maybe<Array<Maybe<Season>>>;
-};
-
-export type Season = {
-  __typename?: 'Season';
+export type Competition = {
+  __typename?: 'Competition';
+  groupId: Scalars['Int'];
   id: Scalars['ID'];
   name: Scalars['String'];
 };
 
-export type CreateSeasonMutationVariables = Exact<{
-  input?: InputMaybe<CreateSeasonInput>;
+export type CreateEventInput = {
+  competitionId: Scalars['Int'];
+  groupId: Scalars['Int'];
+  isHome: Scalars['Boolean'];
+  opponentId: Scalars['Int'];
+  seasonId: Scalars['Int'];
+  teamId: Scalars['Int'];
+};
+
+export type Event = {
+  __typename?: 'Event';
+  competition?: Maybe<Competition>;
+  competitionId: Scalars['Int'];
+  groupId: Scalars['Int'];
+  id: Scalars['ID'];
+  isHome: Scalars['Boolean'];
+  opponent?: Maybe<Team>;
+  opponentId: Scalars['Int'];
+  players?: Maybe<Array<Maybe<EventPlayer>>>;
+  result?: Maybe<EventResult>;
+  seasonId: Scalars['Int'];
+  stats?: Maybe<Array<Maybe<PlayerStats>>>;
+  team?: Maybe<Team>;
+  teamId: Scalars['Int'];
+  votes?: Maybe<Array<Maybe<Vote>>>;
+};
+
+export type EventPlayer = {
+  __typename?: 'EventPlayer';
+  player?: Maybe<PlaterData>;
+  status?: Maybe<PlayerStatus>;
+};
+
+export type EventResult = {
+  __typename?: 'EventResult';
+  opponentGoals: Scalars['Int'];
+  teamGoals: Scalars['Int'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createCompetition?: Maybe<Competition>;
+};
+
+
+export type MutationCreateCompetitionArgs = {
+  name: Scalars['String'];
+};
+
+export type PlaterData = {
+  __typename?: 'PlaterData';
+  firstName: Scalars['String'];
+  id: Scalars['Int'];
+  lastName: Scalars['String'];
+};
+
+export type Player = {
+  __typename?: 'Player';
+  email: Scalars['String'];
+  events?: Maybe<Array<Maybe<Event>>>;
+  firstName: Scalars['String'];
+  id: Scalars['ID'];
+  image?: Maybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  number: Scalars['Int'];
+  receivedVotes?: Maybe<Array<Maybe<Vote>>>;
+  stats?: Maybe<Array<Maybe<PlayerStats>>>;
+  submitedVotes?: Maybe<Array<Maybe<Vote>>>;
+  team?: Maybe<Team>;
+  teamId: Scalars['Int'];
+};
+
+export type PlayerStats = {
+  __typename?: 'PlayerStats';
+  assists: Scalars['Int'];
+  event?: Maybe<Event>;
+  eventId: Scalars['Int'];
+  goals: Scalars['Int'];
+  id: Scalars['ID'];
+  player?: Maybe<Player>;
+  playerId: Scalars['Int'];
+  redCards: Scalars['Int'];
+  seasonId: Scalars['Int'];
+  yellowCards: Scalars['Int'];
+};
+
+export enum PlayerStatus {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Pending = 'PENDING'
+}
+
+export type Query = {
+  __typename?: 'Query';
+  events?: Maybe<Array<Maybe<Event>>>;
+};
+
+
+export type QueryEventsArgs = {
+  input: QueryByGroupAndSeasonInput;
+};
+
+export type QueryByGroupAndSeasonInput = {
+  groupId: Scalars['Int'];
+  seasonId: Scalars['Int'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  groupId: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  owned: Scalars['Boolean'];
+  players?: Maybe<Array<Maybe<Player>>>;
+};
+
+export type Vote = {
+  __typename?: 'Vote';
+  id: Scalars['ID'];
+  owner?: Maybe<Player>;
+  ownerId: Scalars['Int'];
+  player?: Maybe<Player>;
+  playerId: Scalars['Int'];
+  points: Scalars['Int'];
+};
+
+export type GetAllEventsQueryVariables = Exact<{
+  input: QueryByGroupAndSeasonInput;
 }>;
 
 
-export type CreateSeasonMutation = { __typename?: 'Mutation', createSeason?: { __typename?: 'Season', id: string, name: string } | null };
-
-export type GetAllSeasonsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
 
 
-export type GetAllSeasonsQuery = { __typename?: 'Query', seasons?: Array<{ __typename?: 'Season', id: string, name: string } | null> | null };
-
-
-export const CreateSeasonDocument = gql`
-    mutation CreateSeason($input: CreateSeasonInput) {
-  createSeason(input: $input) {
+export const GetAllEventsDocument = gql`
+    query GetAllEvents($input: QueryByGroupAndSeasonInput!) {
+  events(input: $input) {
     id
-    name
-  }
-}
-    `;
-export type CreateSeasonMutationFn = Apollo.MutationFunction<CreateSeasonMutation, CreateSeasonMutationVariables>;
-
-/**
- * __useCreateSeasonMutation__
- *
- * To run a mutation, you first call `useCreateSeasonMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSeasonMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSeasonMutation, { data, loading, error }] = useCreateSeasonMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateSeasonMutation(baseOptions?: Apollo.MutationHookOptions<CreateSeasonMutation, CreateSeasonMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSeasonMutation, CreateSeasonMutationVariables>(CreateSeasonDocument, options);
-      }
-export type CreateSeasonMutationHookResult = ReturnType<typeof useCreateSeasonMutation>;
-export type CreateSeasonMutationResult = Apollo.MutationResult<CreateSeasonMutation>;
-export type CreateSeasonMutationOptions = Apollo.BaseMutationOptions<CreateSeasonMutation, CreateSeasonMutationVariables>;
-export const GetAllSeasonsDocument = gql`
-    query GetAllSeasons {
-  seasons {
-    id
-    name
+    isHome
+    opponentId
+    competition {
+      name
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
   }
 }
     `;
 
 /**
- * __useGetAllSeasonsQuery__
+ * __useGetAllEventsQuery__
  *
- * To run a query within a React component, call `useGetAllSeasonsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllSeasonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAllSeasonsQuery({
+ * const { data, loading, error } = useGetAllEventsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetAllSeasonsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>) {
+export function useGetAllEventsQuery(baseOptions: Apollo.QueryHookOptions<GetAllEventsQuery, GetAllEventsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>(GetAllSeasonsDocument, options);
+        return Apollo.useQuery<GetAllEventsQuery, GetAllEventsQueryVariables>(GetAllEventsDocument, options);
       }
-export function useGetAllSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>) {
+export function useGetAllEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllEventsQuery, GetAllEventsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>(GetAllSeasonsDocument, options);
+          return Apollo.useLazyQuery<GetAllEventsQuery, GetAllEventsQueryVariables>(GetAllEventsDocument, options);
         }
-export type GetAllSeasonsQueryHookResult = ReturnType<typeof useGetAllSeasonsQuery>;
-export type GetAllSeasonsLazyQueryHookResult = ReturnType<typeof useGetAllSeasonsLazyQuery>;
-export type GetAllSeasonsQueryResult = Apollo.QueryResult<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>;
+export type GetAllEventsQueryHookResult = ReturnType<typeof useGetAllEventsQuery>;
+export type GetAllEventsLazyQueryHookResult = ReturnType<typeof useGetAllEventsLazyQuery>;
+export type GetAllEventsQueryResult = Apollo.QueryResult<GetAllEventsQuery, GetAllEventsQueryVariables>;
