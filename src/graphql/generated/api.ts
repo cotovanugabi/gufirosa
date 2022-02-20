@@ -153,7 +153,7 @@ export type GetAllEventsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
+export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
 
 
 export const GetAllEventsDocument = gql`
@@ -161,6 +161,7 @@ export const GetAllEventsDocument = gql`
   events(input: $input) {
     id
     isHome
+    teamId
     opponentId
     competition {
       name

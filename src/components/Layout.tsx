@@ -76,5 +76,7 @@ export function HStack(props: StackProps) {
 }
 
 export function VStack(props: StackProps) {
-  return <Stack direction="column" alignItems="center" {...props} />;
+  return (
+    <Stack direction="column" alignItems="center" flexWrap="wrap" {...props} />
+  );
 }

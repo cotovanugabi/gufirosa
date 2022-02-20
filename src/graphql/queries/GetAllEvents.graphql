@@ -2,6 +2,7 @@ query GetAllEvents($input: QueryByGroupAndSeasonInput!) {
   events(input: $input) {
     id
     isHome
+    teamId
     opponentId
     competition {
       name
