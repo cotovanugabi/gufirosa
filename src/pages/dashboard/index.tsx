@@ -30,7 +30,7 @@ export default function Dashboard() {
   }
 
   return (
-    <VStack alignItems="normal" spacing={1} divider={<Divider />}>
+    <VStack alignItems="normal" spacing={0.5} divider={<Divider />}>
       {data?.events?.map((event) => (
         <EventItem key={`event-${event?.id}`} event={event} />
       ))}
