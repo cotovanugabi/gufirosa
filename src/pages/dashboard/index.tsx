@@ -49,7 +49,7 @@ function EventItem({ event }: EventItemProps) {
     event.isHome
   );
   return (
-    <Link href="/dashboard/events/1">
+    <Link href={`/dashboard/events/${event.id}`}>
       <HStack width="100%" spacing={3}>
         <Typography fontSize="small">20 Feb, 11:30</Typography>
         <VStack alignItems="flex-start" flex="0 0 200px">

@@ -1,0 +1,29 @@
+query GetEvent($input: QueryEventInput!) {
+  event(input: $input) {
+    id
+    isHome
+    teamId
+    opponentId
+    competition {
+      name
+    }
+    players {
+      player {
+        id
+        firstName
+        lastName
+      }
+      status
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
+  }
+}

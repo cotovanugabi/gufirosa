@@ -102,15 +102,18 @@ const typeDefs = /* GraphQL */ `
     opponentId: Int!
     isHome: Boolean!
   }
-
   input QueryByGroupAndSeasonInput {
     seasonId: Int!
     groupId: Int!
+  }
+  input QueryEventInput {
+    eventId: Int!
   }
 
   ########### Queries
   type Query {
     events(input: QueryByGroupAndSeasonInput!): [Event]
+    event(input: QueryEventInput!): Event
   }
   type Mutation {
     createCompetition(name: String!): Competition

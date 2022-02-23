@@ -116,7 +116,13 @@ export enum PlayerStatus {
 
 export type Query = {
   __typename?: 'Query';
+  event?: Maybe<Event>;
   events?: Maybe<Array<Maybe<Event>>>;
+};
+
+
+export type QueryEventArgs = {
+  input: QueryEventInput;
 };
 
 
@@ -127,6 +133,10 @@ export type QueryEventsArgs = {
 export type QueryByGroupAndSeasonInput = {
   groupId: Scalars['Int'];
   seasonId: Scalars['Int'];
+};
+
+export type QueryEventInput = {
+  eventId: Scalars['Int'];
 };
 
 export type Team = {
@@ -154,6 +164,13 @@ export type GetAllEventsQueryVariables = Exact<{
 
 
 export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
+
+export type GetEventQueryVariables = Exact<{
+  input: QueryEventInput;
+}>;
+
+
+export type GetEventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, players?: Array<{ __typename?: 'EventPlayer', status?: PlayerStatus | null, player?: { __typename?: 'PlaterData', id: number, firstName: string, lastName: string } | null } | null> | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
 
 
 export const GetAllEventsDocument = gql`
@@ -207,3 +224,62 @@ export function useGetAllEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetAllEventsQueryHookResult = ReturnType<typeof useGetAllEventsQuery>;
 export type GetAllEventsLazyQueryHookResult = ReturnType<typeof useGetAllEventsLazyQuery>;
 export type GetAllEventsQueryResult = Apollo.QueryResult<GetAllEventsQuery, GetAllEventsQueryVariables>;
+export const GetEventDocument = gql`
+    query GetEvent($input: QueryEventInput!) {
+  event(input: $input) {
+    id
+    isHome
+    teamId
+    opponentId
+    competition {
+      name
+    }
+    players {
+      player {
+        id
+        firstName
+        lastName
+      }
+      status
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEventQuery__
+ *
+ * To run a query within a React component, call `useGetEventQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEventQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetEventQuery(baseOptions: Apollo.QueryHookOptions<GetEventQuery, GetEventQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEventQuery, GetEventQueryVariables>(GetEventDocument, options);
+      }
+export function useGetEventLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEventQuery, GetEventQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEventQuery, GetEventQueryVariables>(GetEventDocument, options);
+        }
+export type GetEventQueryHookResult = ReturnType<typeof useGetEventQuery>;
+export type GetEventLazyQueryHookResult = ReturnType<typeof useGetEventLazyQuery>;
+export type GetEventQueryResult = Apollo.QueryResult<GetEventQuery, GetEventQueryVariables>;
