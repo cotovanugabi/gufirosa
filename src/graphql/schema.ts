@@ -27,6 +27,7 @@ const typeDefs = /* GraphQL */ `
     id: Int!
     firstName: String!
     lastName: String!
+    number: Int!
   }
 
   type PlayerStats {

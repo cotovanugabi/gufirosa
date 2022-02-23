@@ -12,6 +12,7 @@ export const resolvers = {
         id: true,
         firstName: true,
         lastName: true,
+        number: true,
       };
       let playersOnEvent = await prisma.playersOnEvent.findMany({
         where: {

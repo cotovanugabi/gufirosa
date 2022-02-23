@@ -76,6 +76,7 @@ export type PlaterData = {
   firstName: Scalars['String'];
   id: Scalars['Int'];
   lastName: Scalars['String'];
+  number: Scalars['Int'];
 };
 
 export type Player = {
@@ -170,7 +171,7 @@ export type GetEventQueryVariables = Exact<{
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, players?: Array<{ __typename?: 'EventPlayer', status?: PlayerStatus | null, player?: { __typename?: 'PlaterData', id: number, firstName: string, lastName: string } | null } | null> | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
+export type GetEventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, players?: Array<{ __typename?: 'EventPlayer', status?: PlayerStatus | null, player?: { __typename?: 'PlaterData', id: number, number: number, firstName: string, lastName: string } | null } | null> | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
 
 
 export const GetAllEventsDocument = gql`
@@ -237,6 +238,7 @@ export const GetEventDocument = gql`
     players {
       player {
         id
+        number
         firstName
         lastName
       }

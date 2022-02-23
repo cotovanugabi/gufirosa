@@ -31,7 +31,8 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-hook-form": "^7.27.0"
+    "react-hook-form": "^7.27.0",
+    "react-table": "^7.7.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.6.1",
@@ -47,6 +48,7 @@
     "@types/graphql": "^14.5.0",
     "@types/node": "latest",
     "@types/react": "latest",
+    "@types/react-table": "^7.7.9",
     "eslint": "latest",
     "eslint-config-next": "latest",
     "prisma": "^3.9.2",
