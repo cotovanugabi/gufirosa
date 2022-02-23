@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "npx prisma db seed",
+    "studio": "npx prisma studio",
     "generate": "graphql-codegen --config codegen.yml",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   },

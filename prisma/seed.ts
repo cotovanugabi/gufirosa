@@ -159,198 +159,28 @@ function generateEvents(
 }
 
 function addPlayersToEvents(players: number[], events: number[]) {
-  let playersOnEvents = events.map((eventId) => {
-    return players.map((playerId) =>
-      prisma.playersOnEvent.create({
+  console.log(players);
+  console.log(events);
+
+  const playersOnEvents = events.map((eventId) => {
+    return players.map((playerId) => {
+      const status = randomFromEnum(PlayerStatus);
+      console.log(status);
+      return prisma.playersOnEvent.create({
         data: {
           eventId,
           playerId,
-          status: "ACCEPTED",
+          status,
         },
-      })
-    );
-  });
-  return flatten(playersOnEvents);
-}
-
-// function generateEvents(
-//   seasons: Season[],
-//   teams: {
-//     id: string;
-//     groupId: string;
-//     opponents: string[];
-//   }[],
-//   competitions: Competition[]
-// ) {
-//   let events = seasons.map((season) => {
-//     return teams.map(({ id, groupId, opponents }) => {
-//       return opponents.map((opponent) => {
-//         return competitions.map((comp) => {
-//           return prisma.event.create({
-//             data: {
-//               competitionId: comp.id,
-//               teamId: id,
-//               opponentId: opponent,
-//               seasonId: season.id,
-//               groupId: groupId,
-//               isHome: Math.random() < 0.4, //40% probability of getting true
-//               ...(Math.random() < 0.6
-//                 ? {
-//                     result: {
-//                       create: {
-//                         teamGoals: randomNumberFromInterval(0, 3),
-//                         opponentGoals: randomNumberFromInterval(0, 3),
-//                       },
-//                     },
-//                   }
-//                 : {}),
-//             },
-//           });
-//         });
-//       });
-//     });
-//   });
-//   return flatten(events);
-// }
-
-function generatePlayersOnEvents(
-  players: {
-    playerId: string;
-    groupId: string;
-    events: string[];
-  }[]
-) {
-  let responses = Object.keys(PlayerStatus);
-  let playersOnEvents = players.map(({ playerId, events }) => {
-    return events.map((eventId) => {
-      return {
-        playerId,
-        eventId,
-        status: randomFromArray(responses),
-      };
+      });
     });
   });
   return flatten(playersOnEvents);
 }
 
-// function createTeams(teams: any[], groupId: string) {
-//   return teams.map((team) =>
-//     prisma.team.create({
-//       data: {
-//         ...team,
-//         groupId,
-//       },
-//     })
-//   );
-// }
-
-// function createPlayers(players: any[], teamId: string, groupId: string) {
-//   return players.map((player) =>
-//     prisma.player.create({
-//       data: {
-//         ...player,
-//         groupId,
-//         teamId,
-//       },
-//     })
-//   );
-// }
-
-// function createEvents(
-//   seasonId: string,
-//   groupId: string,
-//   competitionId: string,
-//   teamId: string,
-//   teams: string[]
-// ) {
-//   let events = generateEvents(seasonId, groupId, competitionId, teamId, teams);
-//   return events.map((data) =>
-//     prisma.event.create({
-//       data,
-//     })
-//   );
-// }
-
-// function generateEvents(
-//   seasonId: string,
-//   groupId: string,
-//   competitionId: string,
-//   teamId: string,
-//   teams: string[]
-// ): {
-//   groupId: string;
-//   seasonId: string;
-//   competitionId: string;
-//   teamId: string;
-//   opponentId: string;
-//   isHome: boolean;
-// }[] {
-//   const count = 10;
-//   let events = [];
-//   for (let i = 0; i <= count; i++) {
-//     events.push({
-//       groupId,
-//       seasonId,
-//       competitionId,
-//       teamId,
-//       isHome: Math.random() < 0.5,
-//       opponentId: randomFromArray(teams),
-//       result: {
-//         create: {
-//           teamGoals: randomNumberFromInterval(0, 3),
-//           opponentGoals: randomNumberFromInterval(0, 3),
-//         },
-//       },
-//     });
-//   }
-//   return events;
-// }
-
-// function generatePlayersOnEvents(players: string[], events: string[]) {
-//   let responses = Object.keys(PlayerStatus);
-//   return flatten(
-//     events.map((eventId) => {
-//       return players.map((playerId) => {
-//         return {
-//           eventId,
-//           playerId,
-//           status: randomFromArray(responses),
-//         };
-//       });
-//     })
-//   );
-// }
-
-function generatePlayerStats(
-  players: string[],
-  events: string[],
-  groupId: string,
-  seasonId: string
-) {
-  return flatten(
-    players.map((playerId) => {
-      return events.map((eventId) => {
-        return {
-          playerId,
-          eventId,
-          groupId,
-          seasonId,
-          goals: randomNumber(2),
-          assists: randomNumber(1),
-          redCards: randomNumber(1),
-          yellowCards: randomNumber(1),
-        };
-      });
-    })
-  );
-}
-
-function randomNumber(max = 4) {
-  return Math.round(Math.random() * max);
-}
-
-function randomFromArray(arr: string[]) {
-  return arr[Math.floor(Math.random() * arr.length)];
+function randomFromEnum<T, K extends keyof T>(e: T): K {
+  const keys = Object.keys(e) as K[];
+  return keys[Math.floor(Math.random() * Object.keys(keys).length)];
 }
 
 function randomNumberFromInterval(min: number, max: number) {
