@@ -1,28 +1,30 @@
 import { prisma } from "../lib/prisma";
 
-const seasons = [
-  {
-    id: 1,
-    name: "Season 2021/22",
-  },
-  {
-    id: 2,
-    name: "Season 2022/23",
-  },
-];
-
 export const resolvers = {
-  Query: {
-    seasons: () => {
-      return seasons;
+  Event: {
+    //@ts-ignore
+    competition: ({ competitionId }) => {
+      return prisma.competition.findFirst({ where: { id: competitionId } });
     },
-    stars: () => {
-      return prisma?.star.findMany();
+    //@ts-ignore
+    team: ({ teamId }) => {
+      return prisma.team.findFirst({ where: { id: teamId } });
+    },
+    //@ts-ignore
+    opponent: ({ opponentId }) => {
+      return prisma.team.findFirst({ where: { id: opponentId } });
+    },
+    //@ts-ignore
+    result: ({ id }) => {
+      return prisma.eventResult.findFirst({ where: { eventId: id } });
     },
   },
-  Mutation: {
-    createSeason: () => {
-      return seasons[0];
+  Query: {
+    //@ts-ignore
+    events: async (_parent, { input: { seasonId, groupId } }) => {
+      return prisma.event.findMany({
+        where: { seasonId, groupId },
+      });
     },
   },
 };

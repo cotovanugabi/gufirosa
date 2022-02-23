@@ -1,5 +1,5 @@
 import { PrismaClient, PlayerStatus } from "@prisma/client";
-import { comps, players, teams } from "./data";
+import { comps, groups, players, seasons, teams } from "./data";
 
 let prisma = new PrismaClient();
 
@@ -13,22 +13,11 @@ main()
   });
 
 async function main() {
-  console.log(`Seeding seasons...`);
-  let currentSeason = await prisma.season.create({
-    data: {
-      name: "Season 2021/22",
-    },
-  });
-
-  console.log("Seeding groups...");
-  let currentGroup = await prisma.group.create({
-    data: {
-      name: "Gufirosa",
-    },
-  });
+  const [currentSeason] = seasons;
+  const [currentGroup] = groups;
 
   console.log("Seeding competitions...");
-  let [mainCompetition, ...comps] = await prisma.$transaction(
+  const [mainCompetition, ...comps] = await prisma.$transaction(
     generateComps(currentGroup.id, currentSeason.id)
   );
 
@@ -90,6 +79,16 @@ async function main() {
   //     currentSeason.id
   //   ),
   // });
+}
+
+function generateSeasons() {
+  return seasons.map((season) =>
+    prisma.season.create({
+      data: {
+        name: season.name,
+      },
+    })
+  );
 }
 
 function generateComps(groupId: number, seasonId: number) {

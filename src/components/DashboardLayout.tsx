@@ -21,7 +21,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Container>
           <HStack spacing={2} pt={3} pb={2}>
-            <Typography>GFRS</Typography>
+            <Typography fontWeight="medium">GFRS</Typography>
             <Typography fontWeight="medium">/</Typography>
             <FormControl size="small">
               <InputLabel id="group-label">Group</InputLabel>

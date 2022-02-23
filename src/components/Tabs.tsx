@@ -2,20 +2,17 @@ import { useState } from "react";
 import Box from "@mui/material/Box";
 import Tabs, { TabsProps } from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Link from "next/link";
 
 interface NavLinkProps {
   label?: string;
-  href?: string;
+  href: string;
 }
-export function NavLink(props: NavLinkProps) {
+export function NavLink({ href, ...props }: NavLinkProps) {
   return (
-    <Tab
-      component="a"
-      onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-        event.preventDefault();
-      }}
-      {...props}
-    />
+    <Link href={href} passHref>
+      <Tab disableRipple {...props} />
+    </Link>
   );
 }
 

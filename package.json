@@ -30,7 +30,8 @@
     "micro": "^9.3.4",
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-hook-form": "^7.27.0"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.6.1",

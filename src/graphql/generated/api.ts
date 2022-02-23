@@ -15,119 +15,195 @@ export type Scalars = {
   Float: number;
 };
 
-export type CreateSeasonInput = {
-  id?: InputMaybe<Scalars['String']>;
+export type Competition = {
+  __typename?: 'Competition';
+  groupId: Scalars['Int'];
+  id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type CreateEventInput = {
+  competitionId: Scalars['Int'];
+  groupId: Scalars['Int'];
+  isHome: Scalars['Boolean'];
+  opponentId: Scalars['Int'];
+  seasonId: Scalars['Int'];
+  teamId: Scalars['Int'];
+};
+
+export type Event = {
+  __typename?: 'Event';
+  competition?: Maybe<Competition>;
+  competitionId: Scalars['Int'];
+  groupId: Scalars['Int'];
+  id: Scalars['ID'];
+  isHome: Scalars['Boolean'];
+  opponent?: Maybe<Team>;
+  opponentId: Scalars['Int'];
+  players?: Maybe<Array<Maybe<EventPlayer>>>;
+  result?: Maybe<EventResult>;
+  seasonId: Scalars['Int'];
+  stats?: Maybe<Array<Maybe<PlayerStats>>>;
+  team?: Maybe<Team>;
+  teamId: Scalars['Int'];
+  votes?: Maybe<Array<Maybe<Vote>>>;
+};
+
+export type EventPlayer = {
+  __typename?: 'EventPlayer';
+  player?: Maybe<PlaterData>;
+  status?: Maybe<PlayerStatus>;
+};
+
+export type EventResult = {
+  __typename?: 'EventResult';
+  opponentGoals: Scalars['Int'];
+  teamGoals: Scalars['Int'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createSeason?: Maybe<Season>;
+  createCompetition?: Maybe<Competition>;
 };
 
 
-export type MutationCreateSeasonArgs = {
-  input?: InputMaybe<CreateSeasonInput>;
-};
-
-export type Query = {
-  __typename?: 'Query';
-  seasons?: Maybe<Array<Maybe<Season>>>;
-  stars?: Maybe<Array<Maybe<Star>>>;
-};
-
-export type Season = {
-  __typename?: 'Season';
-  id: Scalars['ID'];
+export type MutationCreateCompetitionArgs = {
   name: Scalars['String'];
 };
 
-export type Star = {
-  __typename?: 'Star';
-  constellation?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  name?: Maybe<Scalars['String']>;
+export type PlaterData = {
+  __typename?: 'PlaterData';
+  firstName: Scalars['String'];
+  id: Scalars['Int'];
+  lastName: Scalars['String'];
 };
 
-export type GetAllSeasonsQueryVariables = Exact<{ [key: string]: never; }>;
+export type Player = {
+  __typename?: 'Player';
+  email: Scalars['String'];
+  events?: Maybe<Array<Maybe<Event>>>;
+  firstName: Scalars['String'];
+  id: Scalars['ID'];
+  image?: Maybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  number: Scalars['Int'];
+  receivedVotes?: Maybe<Array<Maybe<Vote>>>;
+  stats?: Maybe<Array<Maybe<PlayerStats>>>;
+  submitedVotes?: Maybe<Array<Maybe<Vote>>>;
+  team?: Maybe<Team>;
+  teamId: Scalars['Int'];
+};
+
+export type PlayerStats = {
+  __typename?: 'PlayerStats';
+  assists: Scalars['Int'];
+  event?: Maybe<Event>;
+  eventId: Scalars['Int'];
+  goals: Scalars['Int'];
+  id: Scalars['ID'];
+  player?: Maybe<Player>;
+  playerId: Scalars['Int'];
+  redCards: Scalars['Int'];
+  seasonId: Scalars['Int'];
+  yellowCards: Scalars['Int'];
+};
+
+export enum PlayerStatus {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Pending = 'PENDING'
+}
+
+export type Query = {
+  __typename?: 'Query';
+  events?: Maybe<Array<Maybe<Event>>>;
+};
 
 
-export type GetAllSeasonsQuery = { __typename?: 'Query', seasons?: Array<{ __typename?: 'Season', id: string, name: string } | null> | null };
+export type QueryEventsArgs = {
+  input: QueryByGroupAndSeasonInput;
+};
 
-export type GetAllStarsQueryVariables = Exact<{ [key: string]: never; }>;
+export type QueryByGroupAndSeasonInput = {
+  groupId: Scalars['Int'];
+  seasonId: Scalars['Int'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  groupId: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  owned: Scalars['Boolean'];
+  players?: Maybe<Array<Maybe<Player>>>;
+};
+
+export type Vote = {
+  __typename?: 'Vote';
+  id: Scalars['ID'];
+  owner?: Maybe<Player>;
+  ownerId: Scalars['Int'];
+  player?: Maybe<Player>;
+  playerId: Scalars['Int'];
+  points: Scalars['Int'];
+};
+
+export type GetAllEventsQueryVariables = Exact<{
+  input: QueryByGroupAndSeasonInput;
+}>;
 
 
-export type GetAllStarsQuery = { __typename?: 'Query', stars?: Array<{ __typename?: 'Star', id: string, name?: string | null, constellation?: string | null } | null> | null };
+export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
 
 
-export const GetAllSeasonsDocument = gql`
-    query GetAllSeasons {
-  seasons {
+export const GetAllEventsDocument = gql`
+    query GetAllEvents($input: QueryByGroupAndSeasonInput!) {
+  events(input: $input) {
     id
-    name
+    isHome
+    teamId
+    opponentId
+    competition {
+      name
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
   }
 }
     `;
 
 /**
- * __useGetAllSeasonsQuery__
+ * __useGetAllEventsQuery__
  *
- * To run a query within a React component, call `useGetAllSeasonsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllSeasonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAllSeasonsQuery({
+ * const { data, loading, error } = useGetAllEventsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetAllSeasonsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>) {
+export function useGetAllEventsQuery(baseOptions: Apollo.QueryHookOptions<GetAllEventsQuery, GetAllEventsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>(GetAllSeasonsDocument, options);
+        return Apollo.useQuery<GetAllEventsQuery, GetAllEventsQueryVariables>(GetAllEventsDocument, options);
       }
-export function useGetAllSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>) {
+export function useGetAllEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllEventsQuery, GetAllEventsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>(GetAllSeasonsDocument, options);
+          return Apollo.useLazyQuery<GetAllEventsQuery, GetAllEventsQueryVariables>(GetAllEventsDocument, options);
         }
-export type GetAllSeasonsQueryHookResult = ReturnType<typeof useGetAllSeasonsQuery>;
-export type GetAllSeasonsLazyQueryHookResult = ReturnType<typeof useGetAllSeasonsLazyQuery>;
-export type GetAllSeasonsQueryResult = Apollo.QueryResult<GetAllSeasonsQuery, GetAllSeasonsQueryVariables>;
-export const GetAllStarsDocument = gql`
-    query GetAllStars {
-  stars {
-    id
-    name
-    constellation
-  }
-}
-    `;
-
-/**
- * __useGetAllStarsQuery__
- *
- * To run a query within a React component, call `useGetAllStarsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllStarsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllStarsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllStarsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllStarsQuery, GetAllStarsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllStarsQuery, GetAllStarsQueryVariables>(GetAllStarsDocument, options);
-      }
-export function useGetAllStarsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllStarsQuery, GetAllStarsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllStarsQuery, GetAllStarsQueryVariables>(GetAllStarsDocument, options);
-        }
-export type GetAllStarsQueryHookResult = ReturnType<typeof useGetAllStarsQuery>;
-export type GetAllStarsLazyQueryHookResult = ReturnType<typeof useGetAllStarsLazyQuery>;
-export type GetAllStarsQueryResult = Apollo.QueryResult<GetAllStarsQuery, GetAllStarsQueryVariables>;
+export type GetAllEventsQueryHookResult = ReturnType<typeof useGetAllEventsQuery>;
+export type GetAllEventsLazyQueryHookResult = ReturnType<typeof useGetAllEventsLazyQuery>;
+export type GetAllEventsQueryResult = Apollo.QueryResult<GetAllEventsQuery, GetAllEventsQueryVariables>;
