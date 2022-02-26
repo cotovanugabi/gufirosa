@@ -165,7 +165,6 @@ function addPlayersToEvents(players: number[], events: number[]) {
   const playersOnEvents = events.map((eventId) => {
     return players.map((playerId) => {
       const status = randomFromEnum(PlayerStatus);
-      console.log(status);
       return prisma.playersOnEvent.create({
         data: {
           eventId,

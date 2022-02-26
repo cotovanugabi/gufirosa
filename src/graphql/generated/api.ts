@@ -38,13 +38,13 @@ export type Event = {
   groupId: Scalars['Int'];
   id: Scalars['ID'];
   isHome: Scalars['Boolean'];
-  opponent?: Maybe<Team>;
+  opponent: Team;
   opponentId: Scalars['Int'];
   players?: Maybe<Array<Maybe<EventPlayer>>>;
   result?: Maybe<EventResult>;
   seasonId: Scalars['Int'];
   stats?: Maybe<Array<Maybe<PlayerStats>>>;
-  team?: Maybe<Team>;
+  team: Team;
   teamId: Scalars['Int'];
   votes?: Maybe<Array<Maybe<Vote>>>;
 };
@@ -164,14 +164,14 @@ export type GetAllEventsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
+export type GetAllEventsQuery = { __typename?: 'Query', events?: Array<{ __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, team: { __typename?: 'Team', name: string }, opponent: { __typename?: 'Team', name: string }, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null> | null };
 
 export type GetEventQueryVariables = Exact<{
   input: QueryEventInput;
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, players?: Array<{ __typename?: 'EventPlayer', status?: PlayerStatus | null, player?: { __typename?: 'PlaterData', id: number, number: number, firstName: string, lastName: string } | null } | null> | null, team?: { __typename?: 'Team', name: string } | null, opponent?: { __typename?: 'Team', name: string } | null, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
+export type GetEventQuery = { __typename?: 'Query', event?: { __typename?: 'Event', id: string, isHome: boolean, teamId: number, opponentId: number, competition?: { __typename?: 'Competition', name: string } | null, players?: Array<{ __typename?: 'EventPlayer', status?: PlayerStatus | null, player?: { __typename?: 'PlaterData', id: number, number: number, firstName: string, lastName: string } | null } | null> | null, team: { __typename?: 'Team', name: string }, opponent: { __typename?: 'Team', name: string }, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
 
 
 export const GetAllEventsDocument = gql`

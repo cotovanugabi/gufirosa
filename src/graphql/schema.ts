@@ -60,8 +60,8 @@ const typeDefs = /* GraphQL */ `
     teamId: Int!
     opponentId: Int!
     competition: Competition
-    team: Team
-    opponent: Team
+    team: Team!
+    opponent: Team!
     result: EventResult
     stats: [PlayerStats]
     players: [EventPlayer]

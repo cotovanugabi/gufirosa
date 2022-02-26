@@ -1,6 +1,7 @@
 import {
   Box,
   CircularProgress,
+  Grid,
   Table,
   TableBody,
   TableCell,
@@ -13,7 +14,7 @@ import {
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useSortBy, useTable } from "react-table";
-import { HStack, Link } from "../../../components";
+import { EventInfo, HStack, Link, VStack } from "../../../components";
 import { useGetEventQuery } from "../../../graphql/generated/api";
 
 function flattenPLayers(players: any[]) {
@@ -58,17 +59,17 @@ export default function EventDetails() {
   if (loading) return <CircularProgress />;
 
   return (
-    <div>
-      <HStack>
-        <Box flex={3}>
-          <EventTable
-            columns={columns}
-            data={flattenPLayers(data?.event?.players || [])}
-          />
-        </Box>
-        <Box flex={1} />
-      </HStack>
-    </div>
+    <Grid container spacing={2}>
+      <Grid item xs={8}>
+        <EventTable
+          columns={columns}
+          data={flattenPLayers(data?.event?.players || [])}
+        />
+      </Grid>
+      <Grid item xs={4}>
+        {data?.event && <EventInfo event={data.event} />}
+      </Grid>
+    </Grid>
   );
 }
 

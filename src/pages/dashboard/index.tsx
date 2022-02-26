@@ -14,6 +14,7 @@ import {
   useGetAllEventsQuery,
 } from "../../graphql/generated/api";
 import { HStack, Spacer, VStack, Link } from "../../components";
+import { sortTeams } from "../../utils";
 
 export default function Dashboard() {
   const { data, loading } = useGetAllEventsQuery({
@@ -72,11 +73,4 @@ function EventItem({ event }: EventItemProps) {
       </HStack>
     </Link>
   );
-}
-
-function sortTeams<T>(teams: T[], isHome: boolean) {
-  if (isHome) {
-    return teams;
-  }
-  return teams.reverse();
 }
