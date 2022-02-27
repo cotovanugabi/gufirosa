@@ -1,5 +1,4 @@
 import {
-  Box,
   CircularProgress,
   Grid,
   Table,
@@ -14,15 +13,9 @@ import {
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { useSortBy, useTable } from "react-table";
-import { EventInfo, HStack, Link, VStack } from "../../../components";
+import { EventResultForm, EventStatsForm } from "../../../components";
 import { useGetEventQuery } from "../../../graphql/generated/api";
-
-function flattenPLayers(players: any[]) {
-  return players.map(({ player, status }) => ({
-    ...player,
-    status,
-  }));
-}
+import { filterAcceptedPlayers, flattenPlayers } from "../../../utils";
 
 export default function EventDetails() {
   const { query } = useRouter();
@@ -61,13 +54,17 @@ export default function EventDetails() {
   return (
     <Grid container spacing={2}>
       <Grid item xs={8}>
-        <EventTable
-          columns={columns}
-          data={flattenPLayers(data?.event?.players || [])}
-        />
+        {data?.event?.result ? (
+          <EventStatsForm eventId={data?.event.id} />
+        ) : (
+          <EventTable
+            columns={columns}
+            data={flattenPlayers(data?.event?.players || [])}
+          />
+        )}
       </Grid>
       <Grid item xs={4}>
-        {data?.event && <EventInfo event={data.event} />}
+        {data?.event && <EventResultForm event={data.event} />}
       </Grid>
     </Grid>
   );

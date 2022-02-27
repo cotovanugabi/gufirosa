@@ -22,17 +22,17 @@ async function main() {
   );
 
   console.log("Seeding teams...");
-  let [currentTeam, ...opponents] = await prisma.$transaction(
+  const [currentTeam, ...opponents] = await prisma.$transaction(
     generateTeams(currentGroup.id)
   );
 
   console.log("Seeding players...");
-  let players = await prisma.$transaction(
+  const players = await prisma.$transaction(
     generatePlayers(currentTeam.id, currentGroup.id)
   );
 
   console.log("Seeding events...");
-  let events = await prisma.$transaction(
+  const events = await prisma.$transaction(
     generateEvents(
       currentSeason.id,
       currentGroup.id,
@@ -43,7 +43,7 @@ async function main() {
   );
 
   console.log("Adding players to events...");
-  let playersOnEvents = await prisma.$transaction(
+  const playersOnEvents = await prisma.$transaction(
     //@ts-ignore
     addPlayersToEvents(
       players.map((player) => player.id),

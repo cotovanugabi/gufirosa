@@ -1,0 +1,13 @@
+mutation SubmitEventStats($input: SubmitEventsStatsInput!) {
+  submitEventStats(input: $input) {
+    id
+    goals
+    assists
+    redCards
+    yellowCards
+    playerId
+    eventId
+    firstName
+    lastName
+  }
+}

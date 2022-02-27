@@ -3,20 +3,20 @@ import { resolvers } from "./resolvers";
 
 const typeDefs = /* GraphQL */ `
   type Competition {
-    id: ID!
+    id: Int!
     name: String!
     groupId: Int!
   }
 
   type Player {
-    id: ID!
+    id: Int!
     firstName: String!
     lastName: String!
     number: Int!
     email: String!
     image: String
     teamId: Int!
-    team: Team
+    team: Team!
     events: [Event]
     stats: [PlayerStats]
     receivedVotes: [Vote]
@@ -31,46 +31,45 @@ const typeDefs = /* GraphQL */ `
   }
 
   type PlayerStats {
-    id: ID!
+    id: Int!
     goals: Int!
     assists: Int!
     redCards: Int!
     yellowCards: Int!
     playerId: Int!
-    seasonId: Int!
     eventId: Int!
-    player: Player
-    event: Event
+    firstName: String!
+    lastName: String!
   }
 
   type Team {
-    id: ID!
+    id: Int!
     name: String!
     owned: Boolean!
-    groupId: String!
-    players: [Player]
+    groupId: Int!
+    players: [Player!]
   }
 
   type Event {
-    id: ID!
+    id: Int!
     isHome: Boolean!
     seasonId: Int!
     groupId: Int!
     competitionId: Int!
     teamId: Int!
     opponentId: Int!
-    competition: Competition
+    competition: Competition!
     team: Team!
     opponent: Team!
     result: EventResult
-    stats: [PlayerStats]
-    players: [EventPlayer]
-    votes: [Vote]
+    stats: [PlayerStats!]
+    players: [EventPlayer!]
+    votes: [Vote!]
   }
 
   type EventPlayer {
-    player: PlaterData
-    status: PlayerStatus
+    player: PlaterData!
+    status: PlayerStatus!
   }
 
   type EventResult {
@@ -79,11 +78,11 @@ const typeDefs = /* GraphQL */ `
   }
 
   type Vote {
-    id: ID!
+    id: Int!
     ownerId: Int!
     playerId: Int!
-    owner: Player
-    player: Player
+    owner: Player!
+    player: Player!
     points: Int!
   }
 
@@ -110,14 +109,31 @@ const typeDefs = /* GraphQL */ `
   input QueryEventInput {
     eventId: Int!
   }
+  input QueryEventStatsInput {
+    eventId: Int!
+  }
+  input SubmitEventsStatsInput {
+    players: [EventStats!]
+  }
+  input EventStats {
+    id: Int
+    goals: Int!
+    assists: Int!
+    redCards: Int!
+    yellowCards: Int!
+    playerId: Int!
+    eventId: Int!
+  }
 
   ########### Queries
   type Query {
     events(input: QueryByGroupAndSeasonInput!): [Event]
     event(input: QueryEventInput!): Event
+    eventStats(input: QueryEventStatsInput!): [PlayerStats!]
   }
   type Mutation {
     createCompetition(name: String!): Competition
+    submitEventStats(input: SubmitEventsStatsInput!): [PlayerStats!]
   }
 `;
 

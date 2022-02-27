@@ -94,15 +94,15 @@ model Player {
 }
 
 model PlayerStats {
-  id          Int    @id @default(autoincrement())
-  goals       Int    @default(0)
-  assists     Int    @default(0)
-  redCards    Int    @default(0)
-  yellowCards Int    @default(0)
+  id          Int     @id @default(autoincrement())
+  goals       Int     @default(0)
+  assists     Int     @default(0)
+  redCards    Int     @default(0)
+  yellowCards Int     @default(0)
   playerId    Int
   eventId     Int
-  player      Player @relation(fields: [playerId], references: [id])
-  event       Event  @relation(fields: [eventId], references: [id])
+  player      Player? @relation(fields: [playerId], references: [id])
+  event       Event?  @relation(fields: [eventId], references: [id])
 }
 
 model PlayersOnEvent {
@@ -113,7 +113,7 @@ model PlayersOnEvent {
   event     Event        @relation(fields: [eventId], references: [id])
   status    PlayerStatus @default(PENDING)
 
-  @@id([playerId, eventId])
+  @@unique([playerId, eventId])
 }
 
 enum PlayerStatus {

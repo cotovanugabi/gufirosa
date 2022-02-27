@@ -4,4 +4,6 @@ export * from "./Tabs";
 export * from "./Layout";
 export * from "./Select";
 export * from "./Link";
-export * from "./EventInfo";
+export * from "./EventResultForm";
+export * from "./EventsStatsForm";
+export * from "./inputs";

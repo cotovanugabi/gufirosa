@@ -1,0 +1,12 @@
+query GetEventStats($input: QueryEventStatsInput!) {
+  eventStats(input: $input) {
+    playerId
+    eventId
+    goals
+    assists
+    yellowCards
+    redCards
+    firstName
+    lastName
+  }
+}

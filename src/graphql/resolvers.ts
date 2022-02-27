@@ -1,5 +1,12 @@
 import { prisma } from "../lib/prisma";
 
+const select = {
+  id: true,
+  firstName: true,
+  lastName: true,
+  number: true,
+};
+
 export const resolvers = {
   Event: {
     //@ts-ignore
@@ -8,13 +15,7 @@ export const resolvers = {
     },
     //@ts-ignore
     players: async ({ id, teamId }) => {
-      let select = {
-        id: true,
-        firstName: true,
-        lastName: true,
-        number: true,
-      };
-      let playersOnEvent = await prisma.playersOnEvent.findMany({
+      const playersOnEvent = await prisma.playersOnEvent.findMany({
         where: {
           eventId: id,
         },
@@ -25,8 +26,8 @@ export const resolvers = {
           status: true,
         },
       });
-      let ids = playersOnEvent.map(({ player }) => player.id);
-      let invited = await prisma.player.findMany({
+      const ids = playersOnEvent.map(({ player }) => player.id);
+      const invited = await prisma.player.findMany({
         where: {
           teamId,
           id: {
@@ -69,6 +70,70 @@ export const resolvers = {
       return prisma.event.findFirst({
         where: { id: eventId },
       });
+    },
+    //@ts-ignore
+    eventStats: async (_parent, { input: { eventId } }) => {
+      const stats = await prisma.playerStats.findMany({
+        where: {
+          eventId,
+        },
+        include: {
+          player: {
+            select,
+          },
+        },
+      });
+      console.log("stats", stats);
+      if (stats.length < 1) {
+        const acceptedPlayers = await prisma.playersOnEvent.findMany({
+          where: { eventId, status: "ACCEPTED" },
+          include: { player: { select } },
+        });
+        console.log(acceptedPlayers);
+        return acceptedPlayers.map(({ player }) => ({
+          playerId: player.id,
+          firstName: player.firstName,
+          lastName: player.lastName,
+          eventId,
+          goals: 0,
+          assists: 0,
+          redCards: 0,
+          yellowCards: 0,
+        }));
+      }
+      return stats.map(({ player, ...rest }) => ({
+        ...rest,
+        firstName: player?.firstName,
+        lastName: player?.lastName,
+      }));
+    },
+  },
+  Mutation: {
+    //@ts-ignore
+    submitEventStats: async (_parent, { input: { players } }) => {
+      console.log(players);
+      const stats = await prisma.$transaction(
+        players.map((player: any) =>
+          prisma.playerStats.upsert({
+            create: player,
+            update: player,
+            where: {
+              id: player.playerId,
+            },
+            include: {
+              player: {
+                select,
+              },
+            },
+          })
+        )
+      );
+      console.log("created", stats);
+      return stats.map(({ player, ...rest }) => ({
+        ...rest,
+        firstName: player?.firstName,
+        lastName: player?.lastName,
+      }));
     },
   },
 };
