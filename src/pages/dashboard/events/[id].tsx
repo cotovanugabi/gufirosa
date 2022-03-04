@@ -15,7 +15,7 @@ import { useMemo } from "react";
 import { useSortBy, useTable } from "react-table";
 import { EventResultForm, EventStatsForm } from "../../../components";
 import { useGetEventQuery } from "../../../graphql/generated/api";
-import { filterAcceptedPlayers, flattenPlayers } from "../../../utils";
+import { flattenPlayers } from "../../../utils";
 
 export default function EventDetails() {
   const { query } = useRouter();

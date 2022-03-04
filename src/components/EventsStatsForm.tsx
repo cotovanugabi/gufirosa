@@ -1,6 +1,6 @@
 import {
   Control,
-  FieldValues,
+  SubmitHandler,
   useFieldArray,
   useForm,
   useWatch,
@@ -13,26 +13,34 @@ import {
   TableContainer,
   Table,
   TableBody,
-  Typography,
   InputAdornment,
   IconButton,
   TableHead,
   CircularProgress,
+  Snackbar,
+  Alert,
+  Card,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { VStack } from "./Layout";
+import { VStack, HStack } from "./Layout";
 import { TextInput } from "./inputs";
 import { AddRounded } from "@mui/icons-material";
-import { HStack, Spacer } from ".";
 import {
+  PlayerStats,
   useGetEventStatsQuery,
   useSubmitEventStatsMutation,
 } from "../graphql/generated/api";
+import { useDisclosure } from "@chakra-ui/hooks";
+
+interface FormFields {
+  players: PlayerStats[];
+}
 
 interface EventStatsFormProps {
   eventId: number;
 }
 export function EventStatsForm({ eventId }: EventStatsFormProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, loading } = useGetEventStatsQuery({
     variables: {
       input: {
@@ -40,8 +48,10 @@ export function EventStatsForm({ eventId }: EventStatsFormProps) {
       },
     },
   });
-  const { control, handleSubmit } = useForm();
-  const [submitEventStats] = useSubmitEventStatsMutation();
+  const { control, handleSubmit, reset, formState } = useForm<FormFields>();
+  const [submitEventStats] = useSubmitEventStatsMutation({
+    onCompleted: onOpen,
+  });
   const { fields, append } = useFieldArray({
     name: "players",
     control,
@@ -53,7 +63,7 @@ export function EventStatsForm({ eventId }: EventStatsFormProps) {
     }
   }, [data, fields]);
 
-  const onSubmit = handleSubmit((values) => {
+  const onSubmit: SubmitHandler<FormFields> = (values) => {
     submitEventStats({
       variables: {
         input: {
@@ -63,52 +73,59 @@ export function EventStatsForm({ eventId }: EventStatsFormProps) {
         },
       },
     });
-  });
+  };
 
   if (loading) return <CircularProgress />;
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <HStack>
-          <Typography>Players</Typography>
-          <Spacer />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <HStack spacing={2} mb={2}>
           <Button type="submit" variant="contained" size="medium">
             Submit
           </Button>
+          <Button variant="outlined" size="medium" onClick={() => reset()}>
+            Reset
+          </Button>
         </HStack>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>G</TableCell>
-                <TableCell>A</TableCell>
-                <TableCell>YC</TableCell>
-                <TableCell>RC</TableCell>
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {fields.map((field, index) => (
-                <PlayerRow
-                  key={`row-${field.id}`}
-                  control={control}
-                  field={field}
-                  index={index}
-                />
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Card elevation={1}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>First Name</TableCell>
+                  <TableCell>Last Name</TableCell>
+                  <TableCell>G</TableCell>
+                  <TableCell>A</TableCell>
+                  <TableCell>YC</TableCell>
+                  <TableCell>RC</TableCell>
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {fields.map((field, index) => (
+                  <PlayerRow
+                    key={`row-${field.id}`}
+                    control={control}
+                    field={field}
+                    index={index}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Card>
       </form>
+      <pre>{JSON.stringify(formState, null, 2)}</pre>
+      <Snackbar open={isOpen} autoHideDuration={6000} onClose={onClose}>
+        <Alert severity="success">The stats was successfully submited!</Alert>
+      </Snackbar>
     </>
   );
 }
 
 interface PlayerRowProps {
-  control: Control<FieldValues>;
+  control: Control<any>;
   field: Record<"id", string>;
   index: number;
 }

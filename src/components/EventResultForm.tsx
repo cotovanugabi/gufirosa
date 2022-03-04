@@ -1,4 +1,11 @@
-import { Button, InputAdornment, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { EventType } from "../types";
 import { sortTeams } from "../utils";
@@ -36,43 +43,50 @@ export function EventResultForm({ event }: EventResultFormProps) {
 
   return (
     <form onSubmit={onSubmit}>
-      <VStack
-        p={2}
-        spacing={2}
-        justifyContent="flex-start"
-        alignItems="flex-start"
-      >
-        <Typography>Result</Typography>
-        <TextField
-          label="Home"
-          id="home"
-          size="small"
-          fullWidth
-          {...register("homeGoals")}
-          InputProps={{
-            inputMode: "numeric",
-            endAdornment: (
-              <InputAdornment position="start">{homeTeam.name}</InputAdornment>
-            ),
-          }}
-        />
-        <TextField
-          label="Away"
-          id="away"
-          size="small"
-          fullWidth
-          {...register("awayGoals")}
-          InputProps={{
-            inputMode: "numeric",
-            endAdornment: (
-              <InputAdornment position="start">{awayTeam.name}</InputAdornment>
-            ),
-          }}
-        />
-        <Button type="submit" variant="outlined" fullWidth>
-          {event.result ? "Update" : "Submit"}
-        </Button>
-      </VStack>
+      <Card elevation={2}>
+        <VStack
+          p={2}
+          spacing={2}
+          justifyContent="flex-start"
+          alignItems="flex-start"
+        >
+          <Box>
+            <Typography variant="h6">{event.competition.name}</Typography>
+            <Typography>20 Feb, 11:30</Typography>
+          </Box>
+          <TextField
+            id="homeGoals"
+            size="small"
+            fullWidth
+            {...register("homeGoals")}
+            InputProps={{
+              inputMode: "numeric",
+              endAdornment: (
+                <InputAdornment position="start">
+                  {homeTeam.name}
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            id="awayGoals"
+            size="small"
+            fullWidth
+            {...register("awayGoals")}
+            InputProps={{
+              inputMode: "numeric",
+              endAdornment: (
+                <InputAdornment position="start">
+                  {awayTeam.name}
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button type="submit" variant="outlined" fullWidth>
+            {event.result ? "Update" : "Submit"}
+          </Button>
+        </VStack>
+      </Card>
     </form>
   );
 }
