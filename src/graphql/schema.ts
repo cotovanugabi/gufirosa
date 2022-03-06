@@ -124,6 +124,11 @@ const typeDefs = /* GraphQL */ `
     playerId: Int!
     eventId: Int!
   }
+  input SubmitEventResultInput {
+    eventId: Int!
+    teamGoals: Int!
+    opponentGoals: Int!
+  }
 
   ########### Queries
   type Query {
@@ -134,6 +139,7 @@ const typeDefs = /* GraphQL */ `
   type Mutation {
     createCompetition(name: String!): Competition
     submitEventStats(input: SubmitEventsStatsInput!): [PlayerStats!]
+    submitEventResult(input: SubmitEventResultInput!): Event
   }
 `;
 

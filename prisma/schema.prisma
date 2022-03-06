@@ -16,14 +16,12 @@ model Season {
   updatedAt    DateTime      @updatedAt
   name         String        @db.VarChar(255)
   competitions Competition[]
-  events       Event[]
 }
 
 model Group {
   id           Int           @id @default(autoincrement())
   name         String        @db.VarChar(255)
   players      Player[]
-  events       Event[]
   competitions Competition[]
   teams        Team[]
 }
@@ -46,9 +44,7 @@ model Event {
   teamId        Int
   opponentId    Int
   groupId       Int
-  season        Season           @relation(fields: [seasonId], references: [id])
   competition   Competition      @relation(fields: [competitionId], references: [id])
-  group         Group            @relation(fields: [groupId], references: [id])
   team          Team             @relation(name: "CurrentTeam", fields: [teamId], references: [id])
   opponent      Team             @relation(name: "OpponentTeam", fields: [opponentId], references: [id])
   stats         PlayerStats[]

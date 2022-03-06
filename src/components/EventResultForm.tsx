@@ -1,44 +1,44 @@
-import {
-  Box,
-  Button,
-  Card,
-  InputAdornment,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { Alert, Box, Button, Card, Snackbar, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
+import { useSubmitEventResultMutation } from "../graphql/generated/api";
 import { EventType } from "../types";
-import { sortTeams } from "../utils";
+import { TextInput } from "./inputs";
 import { VStack } from "./Layout";
 
-interface FormValues {
-  homeGoals: number;
-  awayGoals: number;
+interface FormFields {
+  teamGoals: number | string;
+  opponentGoals: number | string;
 }
 
 interface EventResultFormProps {
   event: EventType;
 }
 export function EventResultForm({ event }: EventResultFormProps) {
-  const [homeTeam, awayTeam] = sortTeams(
-    [event.team, event.opponent],
-    event.isHome
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [submitEventResultMutation, { loading }] = useSubmitEventResultMutation(
+    {
+      onCompleted: onOpen,
+    }
   );
-  const [homeGoals, awayGoals] = event.result
-    ? sortTeams(
-        [event.result.opponentGoals, event.result.teamGoals],
-        event.isHome
-      )
-    : [];
-  const { handleSubmit, register } = useForm<FormValues>({
+  const { handleSubmit, control } = useForm<FormFields>({
     defaultValues: {
-      homeGoals,
-      awayGoals,
+      teamGoals: event.result?.teamGoals || "",
+      opponentGoals: event.result?.opponentGoals || "",
     },
   });
-
+  console.log(event);
   const onSubmit = handleSubmit((values) => {
     console.log(values);
+    submitEventResultMutation({
+      variables: {
+        input: {
+          eventId: event.id,
+          opponentGoals: Number(values.opponentGoals),
+          teamGoals: Number(values.teamGoals),
+        },
+      },
+    });
   });
 
   return (
@@ -54,39 +54,30 @@ export function EventResultForm({ event }: EventResultFormProps) {
             <Typography variant="h6">{event.competition.name}</Typography>
             <Typography>20 Feb, 11:30</Typography>
           </Box>
-          <TextField
-            id="homeGoals"
+          <TextInput
+            name="teamGoals"
             size="small"
             fullWidth
-            {...register("homeGoals")}
-            InputProps={{
-              inputMode: "numeric",
-              endAdornment: (
-                <InputAdornment position="start">
-                  {homeTeam.name}
-                </InputAdornment>
-              ),
-            }}
+            isNumeric
+            control={control}
+            endAdornment={event.team.name}
           />
-          <TextField
-            id="awayGoals"
+          <TextInput
+            name="opponentGoals"
             size="small"
             fullWidth
-            {...register("awayGoals")}
-            InputProps={{
-              inputMode: "numeric",
-              endAdornment: (
-                <InputAdornment position="start">
-                  {awayTeam.name}
-                </InputAdornment>
-              ),
-            }}
+            isNumeric
+            control={control}
+            endAdornment={event.opponent.name}
           />
-          <Button type="submit" variant="outlined" fullWidth>
+          <Button type="submit" variant="outlined" fullWidth disabled={loading}>
             {event.result ? "Update" : "Submit"}
           </Button>
         </VStack>
       </Card>
+      <Snackbar open={isOpen} autoHideDuration={6000} onClose={onClose}>
+        <Alert severity="success">The stats was successfully submited!</Alert>
+      </Snackbar>
     </form>
   );
 }

@@ -43,7 +43,7 @@ async function main() {
   );
 
   console.log("Adding players to events...");
-  const playersOnEvents = await prisma.$transaction(
+  await prisma.$transaction(
     //@ts-ignore
     addPlayersToEvents(
       players.map((player) => player.id),
@@ -159,9 +159,6 @@ function generateEvents(
 }
 
 function addPlayersToEvents(players: number[], events: number[]) {
-  console.log(players);
-  console.log(events);
-
   const playersOnEvents = events.map((eventId) => {
     return players.map((playerId) => {
       const status = randomFromEnum(PlayerStatus);

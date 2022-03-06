@@ -74,12 +74,18 @@ export type EventStats = {
 export type Mutation = {
   __typename?: 'Mutation';
   createCompetition?: Maybe<Competition>;
+  submitEventResult?: Maybe<Event>;
   submitEventStats?: Maybe<Array<PlayerStats>>;
 };
 
 
 export type MutationCreateCompetitionArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationSubmitEventResultArgs = {
+  input: SubmitEventResultInput;
 };
 
 
@@ -165,6 +171,12 @@ export type QueryEventStatsInput = {
   eventId: Scalars['Int'];
 };
 
+export type SubmitEventResultInput = {
+  eventId: Scalars['Int'];
+  opponentGoals: Scalars['Int'];
+  teamGoals: Scalars['Int'];
+};
+
 export type SubmitEventsStatsInput = {
   players?: InputMaybe<Array<EventStats>>;
 };
@@ -187,6 +199,13 @@ export type Vote = {
   playerId: Scalars['Int'];
   points: Scalars['Int'];
 };
+
+export type SubmitEventResultMutationVariables = Exact<{
+  input: SubmitEventResultInput;
+}>;
+
+
+export type SubmitEventResultMutation = { __typename?: 'Mutation', submitEventResult?: { __typename?: 'Event', id: number, isHome: boolean, teamId: number, opponentId: number, competition: { __typename?: 'Competition', name: string }, players?: Array<{ __typename?: 'EventPlayer', status: PlayerStatus, player: { __typename?: 'PlaterData', id: number, number: number, firstName: string, lastName: string } }> | null, team: { __typename?: 'Team', name: string }, opponent: { __typename?: 'Team', name: string }, result?: { __typename?: 'EventResult', teamGoals: number, opponentGoals: number } | null } | null };
 
 export type SubmitEventStatsMutationVariables = Exact<{
   input: SubmitEventsStatsInput;
@@ -217,6 +236,64 @@ export type GetEventStatsQueryVariables = Exact<{
 export type GetEventStatsQuery = { __typename?: 'Query', eventStats?: Array<{ __typename?: 'PlayerStats', playerId: number, eventId: number, goals: number, assists: number, yellowCards: number, redCards: number, firstName: string, lastName: string }> | null };
 
 
+export const SubmitEventResultDocument = gql`
+    mutation SubmitEventResult($input: SubmitEventResultInput!) {
+  submitEventResult(input: $input) {
+    id
+    isHome
+    teamId
+    opponentId
+    competition {
+      name
+    }
+    players {
+      player {
+        id
+        number
+        firstName
+        lastName
+      }
+      status
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
+  }
+}
+    `;
+export type SubmitEventResultMutationFn = Apollo.MutationFunction<SubmitEventResultMutation, SubmitEventResultMutationVariables>;
+
+/**
+ * __useSubmitEventResultMutation__
+ *
+ * To run a mutation, you first call `useSubmitEventResultMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitEventResultMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitEventResultMutation, { data, loading, error }] = useSubmitEventResultMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitEventResultMutation(baseOptions?: Apollo.MutationHookOptions<SubmitEventResultMutation, SubmitEventResultMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SubmitEventResultMutation, SubmitEventResultMutationVariables>(SubmitEventResultDocument, options);
+      }
+export type SubmitEventResultMutationHookResult = ReturnType<typeof useSubmitEventResultMutation>;
+export type SubmitEventResultMutationResult = Apollo.MutationResult<SubmitEventResultMutation>;
+export type SubmitEventResultMutationOptions = Apollo.BaseMutationOptions<SubmitEventResultMutation, SubmitEventResultMutationVariables>;
 export const SubmitEventStatsDocument = gql`
     mutation SubmitEventStats($input: SubmitEventsStatsInput!) {
   submitEventStats(input: $input) {

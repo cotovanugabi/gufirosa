@@ -1,0 +1,30 @@
+mutation SubmitEventResult($input: SubmitEventResultInput!) {
+  submitEventResult(input: $input) {
+    id
+    isHome
+    teamId
+    opponentId
+    competition {
+      name
+    }
+    players {
+      player {
+        id
+        number
+        firstName
+        lastName
+      }
+      status
+    }
+    team {
+      name
+    }
+    opponent {
+      name
+    }
+    result {
+      teamGoals
+      opponentGoals
+    }
+  }
+}
